@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RickAdnMorty_6.2</string>
+    <string name="_0">0</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="name">name</string>
+    <string name="status">status</string>
+    <string name="last_known_location">Last location</string>
+    <string name="first_seen">first_seen</string>
+    <string name="get">get</string>
+    <string name="text_error">%1$d - Characters not found </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="secarh_character">Secarh Character</string>
+</resources>
