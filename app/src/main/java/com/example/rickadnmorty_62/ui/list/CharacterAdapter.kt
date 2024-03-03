@@ -2,46 +2,55 @@ package com.example.rickadnmorty_62.ui.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.rickadnmorty_62.R
 import com.example.rickadnmorty_62.databinding.ItemCharacterBinding
 import com.example.rickadnmorty_62.model.Character
 
-class CharacterAdapter : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
-
-    private var listCharacters = emptyList<Character>()
-
-    class CharacterViewHolder(val binding: ItemCharacterBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-            fun bind(character: Character) {
-                binding.imgCharacter.load(character.image)
-                binding.firstSeen.text = character.location.toString()
-                binding.lastLoc.text = character.location.toString()
-                binding.name.text = character.name
-                binding.status.text = character.status
-            }
-    }
+class CharacterAdapter(
+    private val onClick: (Character) -> Unit
+) :androidx.recyclerview.widget.ListAdapter<Character, CharacterViewHolder>(
+    CartoonDiffCallback()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemCharacterBinding.inflate(layoutInflater, parent, false)
-        return CharacterViewHolder(binding)
+        return CharacterViewHolder(
+            ItemCharacterBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )    ,
+            onClick
+        )
     }
 
-    override fun getItemCount(): Int {
-        return listCharacters.size
-    }
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        holder.bind(listCharacters[position])
-        holder.itemView.setOnClickListener{view ->
-            view.findNavController().navigate(R.id.action_listFragment_to_detailFragment)
+        holder.bind(getItem(position))
+    }
+}
+
+class CharacterViewHolder(
+    private val binding: ItemCharacterBinding,
+    private val onClick: (Character) -> Unit
+): RecyclerView.ViewHolder(binding.root) {
+    fun bind(character: Character) = with(binding) {
+        binding.txtIdCharacter.text = character.id.toString()
+        binding.name.text = character.name
+        binding.imgCharacter.load(character.image) {
+            crossfade(true)
+        }
+        itemView.setOnClickListener {
+            onClick
         }
     }
-    fun setCharacters(character: List<Character>) {
-        listCharacters = character
-        notifyDataSetChanged()
-    }
+}
+
+class CartoonDiffCallback: DiffUtil.ItemCallback<Character>(){
+
+    override fun areItemsTheSame(oldItem: Character, newItem: Character) = oldItem.id == newItem.id
+
+    override fun areContentsTheSame(oldItem: Character, newItem: Character) = oldItem == newItem
+
 }

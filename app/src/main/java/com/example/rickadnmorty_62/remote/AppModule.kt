@@ -12,43 +12,47 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@Suppress("UNREACHABLE_CODE")
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 class AppModule {
-    var api: SimpleApi = provideRetrofit().create(SimpleApi::class.java)
 
-    @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder().baseUrl("https://rickandmortyapi.com/api/")
+    @Singleton
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
-        var api: SimpleApi = provideRetrofit().create(SimpleApi::class.java)
     }
-    @Singleton
+
     @Provides
+    @Singleton
     fun provideOkHttpClient(
-        interceptor: Interceptor
+        interceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder().
-        connectTimeout(15L, TimeUnit.SECONDS)
-            .readTimeout(15L, TimeUnit.SECONDS)
-            .writeTimeout(15L, TimeUnit.SECONDS)
+        return OkHttpClient.Builder()
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .callTimeout(20, TimeUnit.SECONDS)
             .addInterceptor(interceptor)
             .build()
     }
-    @Singleton
+
     @Provides
-    fun provideInterceptor(): HttpLoggingInterceptor {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        return httpLoggingInterceptor
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return interceptor
     }
 
-    @Singleton
     @Provides
-    fun provideRickAndMortyApi(retrofit: Retrofit): SimpleApi {
+    @Singleton
+    fun provideCartoonApiService(retrofit: Retrofit): SimpleApi {
         return retrofit.create(SimpleApi::class.java)
     }
 }

@@ -1,82 +1,63 @@
 package com.example.rickadnmorty_62.ui.list
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.fragment.app.activityViewModels
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickadnmorty_62.R
-import com.example.rickadnmorty_62.ui.SharedViewModelFactory
 import com.example.rickadnmorty_62.databinding.FragmentListBinding
-import com.example.rickadnmorty_62.remote.Repository
+import com.example.rickadnmorty_62.model.Character
+import com.example.rickadnmorty_62.ui.BaseFragment
 import com.example.rickadnmorty_62.ui.SharedViewModel
+import com.example.rickadnmorty_62.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ListFragment : Fragment() {
+class ListFragment : BaseFragment() {
 
-    private var _binding: FragmentListBinding? = null
-    private val binding get() = _binding!!
-    private val sharedViewModel: SharedViewModel by activityViewModels {
-        SharedViewModelFactory(
-            Repository()
-        )
+    private val binding by lazy {
+        FragmentListBinding.inflate(layoutInflater)
+    }
+    private val sharedViewModel: SharedViewModel by viewModels()
+
+    private val adapter by lazy {
+        CharacterAdapter(this::onCLick)
     }
 
-    private var adapter =  CharacterAdapter()
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        sharedViewModel.getCharacters(1)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecycler()
-        sharedViewModel.getCharacters(1)
-        sharedViewModel.listCharacters.observe(viewLifecycleOwner,{response->
-            if (response.isSuccessful){
-                adapter.setCharacters(response.body()!!.results)
-                binding.txtError.visibility = View.GONE
-                binding.rvCharacters.visibility = View.VISIBLE
-            }else{
-                binding.txtError.text = getString(R.string.text_error, response.code())
-                binding.txtError.visibility = View.VISIBLE
-                binding.rvCharacters.visibility = View.INVISIBLE
+
+        sharedViewModel.getCharacters().stateHandler(
+            success = {
+                adapter.submitList(it)
+            },
+            state = { state ->
+                binding.progressCircular.isVisible = state is Resource.Loading
             }
-        })
-        binding.apply {
-            btnFilter.setOnClickListener {
-                findNavController().navigate(R.id.action_listFragment_to_filterFragment)
-                rvCharacters.adapter = adapter
-            }
-        }
-//        findNavController().navigate(R.id.action_listFragment_to_filterFragment)
-//        findNavController().navigate(R.id.action_listFragment_to_detailFragment)
+        )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-    private fun setupRecycler() = with(binding) {
-        rvCharacters.layoutManager = LinearLayoutManager(
-            requireActivity(),
-            LinearLayoutManager.VERTICAL,
-            false
+    private fun onCLick(character: Character) {
+        val bundle = bundleOf(
+            "name" to character.name,
+            "status" to character.status,
+            "species" to character.species,
+            "origin" to character.origin.name,
+            "location" to character.location.name,
+            "image" to character.image,
         )
+        findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
     }
 }

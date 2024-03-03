@@ -1,22 +1,14 @@
 package com.example.rickadnmorty_62.ui
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.rickadnmorty_62.remote.Repository
-import com.example.rickadnmorty_62.model.CharacterList
+import com.example.rickadnmorty_62.utils.Resource
+import com.example.rickadnmorty_62.model.Character
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import retrofit2.Response
+import javax.inject.Inject
 
-
-class SharedViewModel(val repository: Repository): ViewModel() {
-    var listCharacters = MutableLiveData<Response<CharacterList>>()
-
-    fun getCharacters(page: Int) {
-        viewModelScope.launch {
-            val characters = repository.getCharacters(page)
-            listCharacters.value = characters
-        }
-    }
+@HiltViewModel
+class SharedViewModel @Inject constructor(private val repository:Repository):ViewModel() {
+    fun getCharacters():LiveData<Resource<List<Character>>> = repository.getCharacters()
 }
