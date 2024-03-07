@@ -5,24 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.rickadnmorty_62.R
 import com.example.rickadnmorty_62.databinding.FragmentDetailBinding
-import com.example.rickadnmorty_62.model.Character
-import com.example.rickadnmorty_62.ui.BaseFragment
+import com.example.rickadnmorty_62.data.base.BaseFragment
 import com.example.rickadnmorty_62.ui.SharedViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class DetailFragment : BaseFragment() {
     private val binding by lazy {
         FragmentDetailBinding.inflate(layoutInflater)
     }
-    private val sharedViewModel: SharedViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,9 +26,6 @@ class DetailFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         getArgs()
     }
-
-
-
 
     private fun getArgs() {
         arguments?.let { bundle ->

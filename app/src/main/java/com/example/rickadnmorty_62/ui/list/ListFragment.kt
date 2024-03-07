@@ -8,15 +8,14 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickadnmorty_62.R
 import com.example.rickadnmorty_62.databinding.FragmentListBinding
-import com.example.rickadnmorty_62.model.Character
-import com.example.rickadnmorty_62.ui.BaseFragment
+import com.example.rickadnmorty_62.data.model.Character
+import com.example.rickadnmorty_62.data.base.BaseFragment
 import com.example.rickadnmorty_62.ui.SharedViewModel
 import com.example.rickadnmorty_62.utils.Resource
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class ListFragment : BaseFragment() {
 
     private val binding by lazy {
@@ -38,7 +37,7 @@ class ListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupAdapter()
         sharedViewModel.getCharacters().stateHandler(
             success = {
                 adapter.submitList(it)
@@ -59,5 +58,13 @@ class ListFragment : BaseFragment() {
             "image" to character.image,
         )
         findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
+    }
+    private fun setupAdapter(){
+        binding.rvCharacters.layoutManager = LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding.rvCharacters.adapter = adapter
     }
 }

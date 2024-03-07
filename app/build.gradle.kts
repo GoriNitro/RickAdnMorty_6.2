@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -37,7 +36,6 @@ android {
     }
     buildFeatures{
         viewBinding = true
-        buildConfig = true
     }
 }
 
@@ -70,13 +68,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:$okHttpClientVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpClientVersion")
 
-    val daggerHiltVersion = "2.50"
-    implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
-    kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
-
     //navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    val navVersion = "2.3.5"
+    implementation ("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation ("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     implementation("io.coil-kt:coil:2.5.0")
+    //Koin
+    implementation("io.insert-koin:koin-android:3.2.0")
 }

@@ -6,38 +6,16 @@
     android:orientation="vertical"
     tools:context=".ui.list.ListFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/secarh_character" />
-
-        <Button
-            android:id="@+id/btn_filter"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/img" />
-
-    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_characters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp" />
-
-    <TextView
-        android:id="@+id/txt_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
 
 </LinearLayout>
